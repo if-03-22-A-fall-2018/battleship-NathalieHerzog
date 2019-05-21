@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include "battleship.h"
 
+CellContent arrMy[FIELDSIZE][FIELDSIZE];
+CellContent arrOp[FIELDSIZE][FIELDSIZE];
+CellContent arrGuess[FIELDSIZE][FIELDSIZE];
+
 /**
 *** Loads the two files battleship.my and battleship.op which hold the fields
 *** of the players. The files hold a stream of 10 times 10 values of type
@@ -20,7 +24,20 @@
 */
 void load_game()
 {
+    FILE* fd_op = fopen("battleship.op", "r");
+    FILE* fd_my = fopen("battleship.my", "r");
 
+    CellContent field;
+
+    for(int i = 0; i < FIELDSIZE; i++)
+    {
+      for(int u = 0; u < FIELDSIZE; u++)
+      {
+        fread(&arrMy[i][u], sizeof(CellContent), 1, fd_my);
+        fread(&arrOp[i][u], sizeof(CellContent), 1, fd_op);
+        arrGuess[i][u] = Unknown;
+      }
+    }
 }
 
 /**
@@ -32,6 +49,11 @@ void load_game()
 */
 CellContent get_shot(int row, int col)
 {
+  if(row >= 0 && col >= 0 && row < FIELDSIZE && col < FIELDSIZE)
+  {
+    return arrMy[row][col];
+  }
+
   return OutOfRange;
 }
 
@@ -39,11 +61,16 @@ CellContent get_shot(int row, int col)
 *** Sets the row and column of the my guesses table to the value held in the
 *** opponents field. If this is a boat all surrounding cells are marked as water.
 *** @param row The row where we place the shot
-*** @param col The columnt where we place the shot.
+*** @param col The column where we place the shot.
 *** @return True if target field is valid, i.e., inside the field, False otherwise.
 */
 bool shoot(int row, int col)
 {
+  if(row >= 0 && col >= 0 && row != FIELDSIZE && col != FIELDSIZE)
+  {
+    return true;
+  }
+
   return false;
 }
 
@@ -55,5 +82,10 @@ bool shoot(int row, int col)
 */
 CellContent get_my_guess(int row, int col)
 {
+  if(row >= 0 && col >= 0 && row != FIELDSIZE && col != FIELDSIZE)
+  {
+    return arrGuess[row][col];
+  }
+
   return OutOfRange;
 }
