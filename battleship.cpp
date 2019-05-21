@@ -27,8 +27,6 @@ void load_game()
     FILE* fd_op = fopen("battleship.op", "r");
     FILE* fd_my = fopen("battleship.my", "r");
 
-    CellContent field;
-
     for(int i = 0; i < FIELDSIZE; i++)
     {
       for(int u = 0; u < FIELDSIZE; u++)
@@ -49,12 +47,22 @@ void load_game()
 */
 CellContent get_shot(int row, int col)
 {
-  if(row >= 0 && col >= 0 && row < FIELDSIZE && col < FIELDSIZE)
+  if(!is_outofrange(row, col))
   {
     return arrMy[row][col];
   }
 
   return OutOfRange;
+}
+
+bool is_outofrange(int row, int col)
+{
+  if(row >= 0 && col >= 0 && row != FIELDSIZE && col != FIELDSIZE)
+  {
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -66,8 +74,30 @@ CellContent get_shot(int row, int col)
 */
 bool shoot(int row, int col)
 {
-  if(row >= 0 && col >= 0 && row != FIELDSIZE && col != FIELDSIZE)
+  if(!is_outofrange(row, col))
   {
+    if(arrOp[row][col] == Boat)
+    {
+      for(int i = 0; i < FIELDSIZE; i++)
+      {
+        for(int u = 0; u < FIELDSIZE; u++)
+        {
+          if(!is_outofrange(i, u) && arrOp[i][u] != Boat)
+          {
+            arrGuess[i][u] = Water;
+          }
+          else
+          {
+            arrGuess[i][u] = arrOp[i][u];
+          }
+        }
+      }
+    }
+    else
+    {
+      arrGuess[row][col] = arrOp[row][col];
+    }
+
     return true;
   }
 
@@ -82,7 +112,7 @@ bool shoot(int row, int col)
 */
 CellContent get_my_guess(int row, int col)
 {
-  if(row >= 0 && col >= 0 && row != FIELDSIZE && col != FIELDSIZE)
+  if(!is_outofrange(row, col))
   {
     return arrGuess[row][col];
   }

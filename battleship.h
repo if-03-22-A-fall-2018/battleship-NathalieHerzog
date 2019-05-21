@@ -57,4 +57,6 @@ bool shoot(int row, int col);
 */
 CellContent get_my_guess(int row, int col);
 
+bool is_outofrange(int row, int col);
+
 #endif
