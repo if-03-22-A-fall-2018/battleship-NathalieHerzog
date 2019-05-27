@@ -78,25 +78,18 @@ bool shoot(int row, int col)
   {
     if(arrOp[row][col] == Boat)
     {
-      for(int i = 0; i < FIELDSIZE; i++)
+      for(int i = row - 1; i <= row + 1; i++)     
       {
-        for(int u = 0; u < FIELDSIZE; u++)
+        for(int u = col - 1; u <= col + 1; u++)
         {
           if(!is_outofrange(i, u) && arrOp[i][u] != Boat)
           {
             arrGuess[i][u] = Water;
           }
-          else
-          {
-            arrGuess[i][u] = arrOp[i][u];
-          }
         }
       }
     }
-    else
-    {
-      arrGuess[row][col] = arrOp[row][col];
-    }
+    arrGuess[row][col] = arrOp[row][col];
 
     return true;
   }
